@@ -1,0 +1,63 @@
+CREATE TABLE users (
+ id BIGINT PRIMARY KEY AUTO_INCREMENT,
+ name VARCHAR(100) NOT NULL,
+ email VARCHAR(254) NOT NULL UNIQUE,
+ password_hash VARCHAR(100) NOT NULL,
+ role VARCHAR(10) NOT NULL CHECK (role IN ('ADMIN','SALES'))
+);
+CREATE TABLE leads (
+ id BIGINT PRIMARY KEY AUTO_INCREMENT,
+ name VARCHAR(100) NOT NULL,
+ phone VARCHAR(25) NOT NULL,
+ email VARCHAR(254),
+ stage VARCHAR(20) NOT NULL DEFAULT 'NEW' CHECK (stage IN ('NEW','CONTACTED','SITE_VISIT','INTERESTED','NEGOTIATION','BOOKED','LOST')),
+ assigned_to BIGINT NOT NULL,
+ next_follow_up DATE,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ CONSTRAINT fk_lead_owner FOREIGN KEY (assigned_to) REFERENCES users(id),
+ INDEX ix_lead_owner_stage (assigned_to,stage),
+ INDEX ix_lead_followup (next_follow_up)
+);
+CREATE TABLE lead_notes (
+ id BIGINT PRIMARY KEY AUTO_INCREMENT,
+ lead_id BIGINT NOT NULL,
+ author_id BIGINT NOT NULL,
+ text VARCHAR(2000) NOT NULL,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ FOREIGN KEY (lead_id) REFERENCES leads(id),
+ FOREIGN KEY (author_id) REFERENCES users(id)
+);
+CREATE TABLE projects (
+ id BIGINT PRIMARY KEY AUTO_INCREMENT,
+ name VARCHAR(100) NOT NULL,
+ location VARCHAR(150) NOT NULL
+);
+CREATE TABLE buildings (
+ id BIGINT PRIMARY KEY AUTO_INCREMENT,
+ project_id BIGINT NOT NULL,
+ name VARCHAR(100) NOT NULL,
+ FOREIGN KEY (project_id) REFERENCES projects(id),
+ UNIQUE KEY uq_building (project_id,name)
+);
+CREATE TABLE units (
+ id BIGINT PRIMARY KEY AUTO_INCREMENT,
+ building_id BIGINT NOT NULL,
+ unit_number VARCHAR(30) NOT NULL,
+ type VARCHAR(30) NOT NULL,
+ price DECIMAL(14,2) NOT NULL CHECK (price > 0),
+ availability VARCHAR(10) NOT NULL DEFAULT 'AVAILABLE' CHECK (availability IN ('AVAILABLE','BOOKED')),
+ FOREIGN KEY (building_id) REFERENCES buildings(id),
+ UNIQUE KEY uq_unit_number (building_id,unit_number)
+);
+CREATE TABLE bookings (
+ id BIGINT PRIMARY KEY AUTO_INCREMENT,
+ lead_id BIGINT NOT NULL UNIQUE,
+ unit_id BIGINT NOT NULL UNIQUE,
+ booked_by BIGINT NOT NULL,
+ booked_price DECIMAL(14,2) NOT NULL CHECK (booked_price > 0),
+ booked_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ FOREIGN KEY (lead_id) REFERENCES leads(id),
+ FOREIGN KEY (unit_id) REFERENCES units(id),
+ FOREIGN KEY (booked_by) REFERENCES users(id)
+);

@@ -1,0 +1,54 @@
+@'
+
+# Dependencies and generated builds
+node_modules/
+target/
+dist/
+coverage/
+.vite/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Private credentials and certificates
+secrets/
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Local backend configuration
+application-local.properties
+application-local.yml
+application-local.yaml
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local backups and archives
+backups/
+*.sql.gz
+*.dump
+*.zip
+'@ | Add-Content -Path .gitignore -Encoding utf8
