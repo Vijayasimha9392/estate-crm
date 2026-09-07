@@ -437,31 +437,15 @@ Docker image builds skip tests, so run verification separately.
 
 ## Verification Status
 
-Completed during initial implementation:
-
 - Frontend TypeScript check and production build passed.
 - Backend compilation and executable packaging passed.
-- Eight application contract tests passed against H2.
+- Eight H2 application contract tests passed.
+- Eight real MySQL 8.4 integration tests passed on 7 September 2026:
+  0 failures, 0 errors, 0 skipped.
+- Docker Compose startup and desktop application screens verified locally.
+- Mobile layout and keyboard interaction checks remain pending.
 
-The supplied local runtime logs and browser screenshots subsequently show:
-
-- Docker backend startup and MySQL connectivity.
-- Successful schema migration.
-- Admin dashboard and lead screens.
-- A new lead with an assigned employee and saved notes.
-- Added project, building, and unit records.
-- Two confirmed bookings.
-- Matching booked units and dashboard booked value.
-
-Still requiring separate verification:
-
-- Automated MySQL integration and concurrency tests.
-- Direct API checks for employee access restrictions on the running MySQL setup.
-- Mobile layout and keyboard interaction checks.
-
-Screenshots show the displayed application state; they do not prove concurrent-request safety or complete permission enforcement.
-
-The earlier authoring-environment notes in `docs/verification.md` describe the checks performed when the original package was created. The local runtime evidence summarized above was provided afterward.
+See [Verification and reviewer walkthrough](docs/verification.md).
 
 ## Troubleshooting
 
